@@ -13,11 +13,11 @@ func UnmarshalLock(path string) (lockfile Lock, err error) {
 		if err = json.Unmarshal(data, &lockfile); err != nil {
 			panic(err)
 		}
-		return
+		return lockfile, err
 	}
 }
 
 // Validate all the lockfile fields
 func Validate(lockfile Lock) (Lock, error) {
-
+	return lockfile, nil
 }

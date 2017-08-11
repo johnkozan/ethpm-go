@@ -1,37 +1,38 @@
 package lockfile
 
 import (
-	"encoding/json"
 	"testing"
+
+	"github.com/coreos/go-semver/semver"
 )
 
 func TestValidateCompilerInfo(t *testing.T) {
 	for i, test := range []struct {
 		compilerInfo CompilerInfo
-		err          error
+		err          string
 	}{
 		{
-			compilerInfo: CompilerInfo{"serpent"},
+			compilerInfo: CompilerInfo{"serpent", semver.New("0.4.13"), CompilerSettings{true, 500}},
 			err:          "invalid compiler type selected: serpent",
 		},
 		{
-			compilerInfo: CompilerInfo{"LLL"},
+			compilerInfo: CompilerInfo{"LLL", semver.New("0.4.13"), CompilerSettings{true, 500}},
 			err:          "invalid compiler type selected: LLL",
 		},
 		{
-			compilerInfo: CompilerInfo{"solc", "0.4.13", CompilerSettings{true, 500}},
+			compilerInfo: CompilerInfo{"solc", semver.New("0.4.13"), CompilerSettings{true, 500}},
 			err:          "",
 		},
 		{
-			compilerInfo: CompilerInfo{"solc", "nightly-0.4.14-f129372245d1b4fd4ff6425e9f7cbe701247cdc1", CompilerSettings{true, 500}},
+			compilerInfo: CompilerInfo{"solc", semver.New("nightly-0.4.14-f129372245d1b4fd4ff6425e9f7cbe701247cdc1"), CompilerSettings{true, 500}},
 			err:          "",
 		},
 		{
-			compilerInfo: CompilerInfo{"solcjs"},
+			compilerInfo: CompilerInfo{"solcjs", semver.New("0.4.13"), CompilerSettings{true, 500}},
 			err:          "invalid compiler type selected: solcjs",
 		},
 	} {
-		err = test.compilerInfo.validate()
+		err := test.compilerInfo.validate()
 		if err != nil && len(test.err) == 0 {
 			t.Errorf("%d failed. Expected no err but got: %v", i, err)
 			continue
