@@ -28,10 +28,9 @@ func (l Lock) validate() (err error) {
 	if !pkgNameRegexp.Match([]byte(l.PackageName)) {
 		return fmt.Errorf("invalid package name: %v\npackage names must comply to the regular expression: [a-zA-Z][-a-zA-Z0-9_]*", l.PackageName)
 	}
-	if l.Meta != (Metadata{}) {
-		if err = l.Meta.validate(); err != nil {
-			return err
-		}
+
+	if err = l.Meta.validate(); err != nil {
+		return err
 	}
 
 	if *l.SemverVersion != (semver.Version{}) {
@@ -64,10 +63,10 @@ func (l Lock) validate() (err error) {
 }
 
 type Metadata struct {
-	Authors     string `json:authors`
-	License     string `json:license`
-	Description string `json:description`
-	Keywords    string `json:keywords`
+	Authors     []string `json:authors`
+	License     string   `json:license`
+	Description string   `json:description`
+	Keywords    []string `json:keywords`
 }
 
 func (metadata Metadata) validate() (err error) {
